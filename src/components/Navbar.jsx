@@ -3,8 +3,11 @@ import Link from "next/link";
 import React, { useRef, useState } from "react";
 import logo from "../assets/logo.png";
 import Image from "next/image";
+import "./navbar.css"
+
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+
 
 const navLinks = [
   { title: "Home", path: "/" },
@@ -24,30 +27,44 @@ function Navbar() {
   };
   return (
     <div ref={container} className="menu_container">
-      <div className="menu_bar top-0 left-0 w-screen flex flex-row justify-between items-center py-4 px-6 z-[1]">
+      <div className="menu_bar top-0 left-0 w-screen flex flex-row justify-between items-center py-4 px-6 z-[1] md:py-6 md:px-12 lg:px-20 ">
         <div className="menu_logo">
           <Link href="/">
-            <div className="w-14 h-14 relative">
-              <Image src={logo} alt="logo" className="rounded-[50%]" fill />
+            <div className="w-16 h-16 relative md:w-20 md:h-20">
+              <div className="absolute w-full top-2 bottom-0 bg-[linear-gradient(to_right,#F87BFF,#FB92CF,#FFDD9B,#C2F0B1,#2FD8FE)] blur-md"></div>
+              <Image src={logo} alt="logo" className="relative rounded-xl" fill />
             </div>
           </Link>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 lg:gap-8">
+          <div className="hidden md:flex gap-4 lg:gap-6">
+          {navLinks.map((link, index) => (
+                <div className="menu_link_item" key={index}>
+                  <div
+                    className="menu_link_item_holder"
+                  >
+                    <Link href={link.path} className="menu_link text-white text-lg ">
+                      {link.title}
+                    </Link>
+                  </div>
+                </div>
+              ))}
+          </div>
           <div>
             <Link href="/register">
-              <button className="text-black font-semibold py-1 px-2 rounded-sm text-xs bg-gray-300">
+              <button className="text-black font-semibold py-2 px-4 rounded-md text-sm bg-gray-300 md:text-md md:py-3 md:px-6 md:rounded-lg">
                 GET STARTED
               </button>
             </Link>
           </div>
 
           <div
-            className="menu_open rounded-[50%] border border-white p-2 z-[2]"
+            className="menu_open rounded-[50%] border border-white border-opacity-70 p-2 z-[2] md:hidden"
             onClick={handleMenuClick}
           >
             {
-              isMenuOpen ? <CloseRoundedIcon className="text-white cursor-pointer" /> : <MenuRoundedIcon className="text-white cursor-pointer" />
+              isMenuOpen ? <CloseRoundedIcon className="hamburger text-white cursor-pointer" /> : <MenuRoundedIcon className="hamburger text-white cursor-pointer" />
             }
           </div>
         </div>

@@ -2,6 +2,7 @@
 import Link from "next/link";
 import React, { useRef, useState } from "react";
 import logo from "../assets/logo.png";
+import logoP from "../assets/logo_p.png"
 import Image from "next/image";
 import "./navbar.css"
 
@@ -30,9 +31,9 @@ function Navbar() {
       <div className="menu_bar top-0 left-0 w-screen flex flex-row justify-between items-center py-4 px-6 z-[1] md:py-6 md:px-12 lg:px-20 ">
         <div className="menu_logo">
           <Link href="/">
-            <div className="w-16 h-16 relative md:w-20 md:h-20">
+            <div className="w-16 h-16 relative md:w-20 md:h-20 z-[2]">
               <div className="absolute w-full top-2 bottom-0 bg-[linear-gradient(to_right,#F87BFF,#FB92CF,#FFDD9B,#C2F0B1,#2FD8FE)] blur-md"></div>
-              <Image src={logo} alt="logo" className="relative rounded-xl" fill />
+              <Image src={logoP} alt="logo" className="relative rounded-xl" fill />
             </div>
           </Link>
         </div>
@@ -53,14 +54,14 @@ function Navbar() {
           </div>
           <div>
             <Link href="/register">
-              <button className="text-black font-semibold py-2 px-4 rounded-md text-sm bg-gray-300 md:text-md md:py-3 md:px-6 md:rounded-lg">
-                GET STARTED
+              <button className="hidden md:flex text-black font-medium bg-white py-3 px-5 rounded-lg">
+                Get Started
               </button>
             </Link>
           </div>
 
           <div
-            className="menu_open rounded-[50%] border border-white border-opacity-70 p-2 z-[2] md:hidden"
+            className="menu_open rounded-[50%] border border-white border-opacity-70 p-2 z-[3] md:hidden"
             onClick={handleMenuClick}
           >
             {
@@ -71,7 +72,7 @@ function Navbar() {
       </div>
 
       {isMenuOpen && (
-        <div className="menu_overlay fixed top-0 left-0 w-screen h-screen py-4 px-6 bg-gray/10 backdrop-blur-md">
+        <div className="menu_overlay fixed top-0 left-0 w-screen h-screen py-4 px-6 bg-black/70 backdrop-blur-md z-[2]">
           <div className="menu_copy h-[inherit] flex flex-col items-center justify-center gap-4">
             <div className="menu_links flex flex-col items-center gap-4">
               {navLinks.map((link, index) => (

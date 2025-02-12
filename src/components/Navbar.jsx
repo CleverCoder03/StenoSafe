@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useRef, useState } from "react";
-import logo from "../assets/logo.png";
+import React, { useState } from "react";
 import logoP from "../assets/logo_p.png"
 import Image from "next/image";
 import "./navbar.css"
@@ -20,15 +19,14 @@ const navLinks = [
 ];
 
 function Navbar() {
-  const container = useRef();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleMenuClick = () => {
     setIsMenuOpen(!isMenuOpen);
   };
   return (
-    <div ref={container} className="menu_container">
-      <div className="menu_bar bg-[#000] top-0 left-0 w-screen flex flex-row justify-between items-center py-4 px-6 z-[1] md:py-6 md:px-12 lg:px-20 ">
+    <div className="menu_container">
+      <div className="menu_bar bg-[#000] top-0 left-0 w-full flex flex-row justify-between items-center py-4 px-6 z-[1] md:py-6 md:px-12 lg:px-20 ">
         <div className="menu_logo">
           <Link href="/">
             <div className="w-16 h-16 relative md:w-[76px] md:h-[76px] z-[2]">
@@ -87,11 +85,6 @@ function Navbar() {
                   </div>
                 </div>
               ))}
-            </div>
-            <div>
-              <a href="http://" target="_blank" rel="noopener noreferrer">
-                
-              </a>
             </div>
           </div>
         </div>

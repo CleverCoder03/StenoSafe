@@ -10,11 +10,7 @@ export default {
       container: {
         padding: "1rem",
         center: true
-      },
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-      },
+      }
     },
   },
   plugins: [],

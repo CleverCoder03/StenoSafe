@@ -28,10 +28,10 @@ function Navbar() {
   };
   return (
     <div ref={container} className="menu_container">
-      <div className="menu_bar top-0 left-0 w-screen flex flex-row justify-between items-center py-4 px-6 z-[1] md:py-6 md:px-12 lg:px-20 ">
+      <div className="menu_bar bg-[#000] top-0 left-0 w-screen flex flex-row justify-between items-center py-4 px-6 z-[1] md:py-6 md:px-12 lg:px-20 ">
         <div className="menu_logo">
           <Link href="/">
-            <div className="w-16 h-16 relative md:w-20 md:h-20 z-[2]">
+            <div className="w-16 h-16 relative md:w-[76px] md:h-[76px] z-[2]">
               <div className="absolute w-full top-2 bottom-0 bg-[linear-gradient(to_right,#F87BFF,#FB92CF,#FFDD9B,#C2F0B1,#2FD8FE)] blur-md"></div>
               <Image src={logoP} alt="logo" className="relative rounded-xl" fill />
             </div>

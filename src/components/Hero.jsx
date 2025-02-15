@@ -3,6 +3,7 @@ import { FaArrowRight } from "react-icons/fa";
 import cursorImage from "../assets/cursor.png";
 import messageImage from "../assets/message.png";
 import Image from "next/image";
+import Link from "next/link";
 
 function Hero() {
   return (
@@ -27,11 +28,23 @@ function Hero() {
         </div>
         <div className="flex justify-center mt-8">
           <div className="inline-flex relative">
-          <h1 className="text-7xl sm:text-9xl font-bold text-center tracking-tighter">
-            One Task <br /> at a Time
-          </h1>
-          <Image src={cursorImage} alt="cursor" height="200" width="200" className="absolute right-[476px] top-[108px] lg:right-[528px] hidden sm:inline" />
-          <Image src={messageImage} alt="message" height="200" width="200" className="absolute top-[56px] left-[498px] lg:left-[550px] hidden sm:inline" />
+            <h1 className="text-7xl sm:text-9xl font-bold text-center tracking-tighter">
+              One Task <br /> at a Time
+            </h1>
+            <Image
+              src={cursorImage}
+              alt="cursor"
+              height="200"
+              width="200"
+              className="absolute right-[476px] top-[108px] lg:right-[528px] hidden sm:inline"
+            />
+            <Image
+              src={messageImage}
+              alt="message"
+              height="200"
+              width="200"
+              className="absolute top-[56px] left-[498px] lg:left-[550px] hidden sm:inline"
+            />
           </div>
         </div>
         <div className="flex justify-center">
@@ -42,9 +55,11 @@ function Hero() {
           </p>
         </div>
         <div className="flex justify-center mt-8">
-          <button className="bg-white text-black py-3 px-5 rounded-lg font-medium">
-            Get Started
-          </button>
+          <Link href="/register">
+            <button className="bg-white text-black py-3 px-5 rounded-lg font-medium">
+              Get Started
+            </button>
+          </Link>
         </div>
       </div>
     </div>

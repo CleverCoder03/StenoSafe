@@ -15,8 +15,7 @@ const userSchema = new mongoose.Schema({
         max: 50
     },
     password: {
-        type: String,
-        min: 6
+        type: String
     },
     img: {
         type: String,
@@ -51,6 +50,6 @@ const EncryptedDataSchema = new mongoose.Schema({
 }, {timestamps: true})
 
 
-export const user = mongoose.models.User || mongoose.model('User', userSchema)
+export const User = mongoose.models?.User || mongoose.model('User', userSchema)
 
-export const EncryptedData = mongoose.models.EncryptedData || mongoose.model('EncryptedData', EncryptedDataSchema)
+export const EncryptedData = mongoose.models?.EncryptedData || mongoose.model('EncryptedData', EncryptedDataSchema)

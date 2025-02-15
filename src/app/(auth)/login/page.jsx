@@ -7,8 +7,8 @@ const LoginPage = async () => {
   return (
     <div className="bg-black text-white h-screen w-screen ">
       <div className="flex items-center justify-center">
-      <div className="fixed inline-flex items-center gap-6 top-10">
-        <div className="">
+      <div className="fixed top-10">
+        <div className="inline-flex items-center gap-6">
           <Link href="/">
             <div className="w-16 h-16 relative md:w-[76px] md:h-[76px] z-[2]">
               <div className="absolute w-full top-2 bottom-0 bg-[linear-gradient(to_right,#F87BFF,#FB92CF,#FFDD9B,#C2F0B1,#2FD8FE)] blur-md"></div>
@@ -20,8 +20,8 @@ const LoginPage = async () => {
               />
             </div>
           </Link>
-        </div>
         <h2 className="text-3xl text-white font-medium tracking-wide">StenoSafe</h2>
+        </div>
       </div>
       </div>
       <div className="h-full w-full flex items-center justify-center">

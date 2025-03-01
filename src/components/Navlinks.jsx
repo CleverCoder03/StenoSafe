@@ -8,11 +8,11 @@ import { handleLogout } from "@/lib/action";
 function Navlinks({session}) {
   const navLinks = [
     { title: "Home", path: "/" },
-    { title: "About", path: "/about" },
+    // { title: "About", path: "/about" },
     { title: "Encrypt", path: "/encryption" },
     { title: "Decrypt", path: "/decryption" },
     { title: "Gallery", path: "/gallery" },
-    { title: "Contact", path: "/contact" },
+    // { title: "Contact", path: "/contact" },
   ];
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);

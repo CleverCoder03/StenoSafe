@@ -18,23 +18,21 @@ export const handleLogout = async () => {
   await signOut();
 };
 
-export const register = async (previousState,formData) => {
+export const register = async (previousState, formData) => {
   const { username, email, password, img, passwordRepeat } =
     Object.fromEntries(formData);
 
   if (password !== passwordRepeat) {
-    // return "Password does not match";
-    // throw new Error("Password does not match");
-    return { error: "Password does not match" };
-    // toast.error("Password does not match")
+    return { error: "Passwords do not match" };
   }
 
   try {
     connectToDB();
 
     const user = await User.findOne({ username });
+
     if (user) {
-      return { error: "Username Already exists" };
+      return { error: "Username already exists" };
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -48,24 +46,43 @@ export const register = async (previousState,formData) => {
     });
 
     await newUser.save();
-    console.log("Saved to DB");
-    return {success: true}
-  } catch (error) {
-    console.log(error);
-  }
-};
+    console.log("saved to db");
 
-export const login = async (previousState, formData) => {
-  const { username, password } = Object.fromEntries(formData);
-
-  try {
-    await signIn("credentials", { username, password });
+    return { success: true };
   } catch (err) {
     console.log(err);
-
-    if (err.message.includes("CredentialsSignin")){
-      return {error: "Invalid Username or Password"}
-    }
-    throw err
+    return { error: "Something went wrong!" };
   }
 };
+
+export const login = async (data) => {
+  try {
+    connectToDB();
+
+    const { username, password } = data;
+
+    if (!username || !password) {
+      return { error: "Username and password are required" };
+    }
+
+    const response = await signIn("credentials", { username, password, redirect: false });
+
+    if (response?.error) {
+      return { error: "Invalid username or password" };
+    }
+
+    return { success: true }; // Indicate success
+  } catch (err) {
+    console.error("Login Error:", err);
+
+    if (err?.name === "CallbackRouteError") {
+      return { error: "Invalid username or password" };
+    }
+
+    return { error: "Something went wrong. Please try again." };
+  }
+};
+
+
+
+

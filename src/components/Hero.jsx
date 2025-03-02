@@ -4,8 +4,10 @@ import cursorImage from "../assets/cursor.png";
 import messageImage from "../assets/message.png";
 import Image from "next/image";
 import Link from "next/link";
+import { auth } from "@/lib/auth";
 
-function Hero() {
+const Hero = async () => {
+  const session = await auth()
   return (
     <div className="text-white bg-[linear-gradient(to_bottom,#000,#200D42_34%,#4F21A1_65%,#A46EDB_82%)] py-[72px] sm:py-24 relative overflow-clip">
       <div className="absolute h-[375px] w-[750px] sm:w-[1536px] sm:h-[768px] lg:w-[2400px] lg:h-[1200px] rounded-[100%] bg-black left-1/2 -translate-x-1/2 border-[#B48CDE] bg-[radial-gradient(closest-side,#000_82%,#9560EB)] top-[calc(100%-96px)] sm:top-[calc(100%-120px)]"></div>
@@ -55,11 +57,15 @@ function Hero() {
           </p>
         </div>
         <div className="flex justify-center mt-8">
-          <Link href="/register">
+          {session?<Link href="/encryption">
+            <button className="bg-white text-black py-3 px-5 rounded-lg font-medium">
+              Encrypt now!!
+            </button>
+          </Link>:(<Link href="/register">
             <button className="bg-white text-black py-3 px-5 rounded-lg font-medium">
               Get Started
             </button>
-          </Link>
+          </Link>)}
         </div>
       </div>
     </div>

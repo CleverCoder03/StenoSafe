@@ -13,44 +13,44 @@ function RegisterForm() {
     state?.success && router.push('/login')
   },[state?.success, router])
   return (
-    <form action={formAction} className="flex flex-col gap-5">
+    <form action={formAction} className="flex flex-col gap-3">
       <div className="flex flex-col">
-        <label htmlFor="username">Username</label>
+        <label htmlFor="username" className="text-sm">Username</label>
         <input
           type="text"
           placeholder="Enter a username"
           name="username"
-          className="p-1.5 rounded mt-1 text-[#222]"
+          className="py-1.5 pl-1.5 text-sm rounded mt-1 text-[#222]"
           required
         />
       </div>
       <div className="flex flex-col">
-        <label htmlFor="email">Email</label>
+        <label htmlFor="email" className="text-sm">Email</label>
         <input
           type="email"
           placeholder="Enter your Email"
           name="email"
-          className="p-1.5 rounded mt-1 text-[#222]"
+          className="py-1.5 pl-1.5 text-sm rounded mt-1 text-[#222]"
         />
       </div>
       <div className="flex flex-col">
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password" className="text-sm">Password</label>
         <input
           type="password"
           placeholder="Password"
           name="password"
-          className="p-1.5 rounded mt-1 text-[#222]"
+          className="py-1.5 pl-1.5 text-sm rounded mt-1 text-[#222]"
           required
         />
       </div>
       <div className="flex flex-col">
-        <label htmlFor="passwordRepeat">Re-enter Password</label>
+        <label htmlFor="passwordRepeat" className="text-sm">Re-enter Password</label>
         <input
           type="password"
           placeholder="Re-enter Password"
           name="passwordRepeat"
           required
-          className="p-1.5 rounded mt-1 text-[#222]"
+          className="py-1.5 pl-1.5 text-sm rounded mt-1 text-[#222]"
         />
       </div>
       <button className="bg-[#841eeb] py-2 rounded-md outline-none mt-4">

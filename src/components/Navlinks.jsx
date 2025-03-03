@@ -43,7 +43,7 @@ function Navlinks({session}) {
               <form action={handleLogout}>
                 <button
                 
-                className="hidden md:flex text-black font-medium bg-white py-3 px-5 rounded-lg"
+                className="hidden md:flex text-red-500 font-medium bg-white py-3 px-5 rounded-lg"
               >
                 Logout
               </button>

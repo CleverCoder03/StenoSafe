@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation"; // Import Next.js router
 import { login } from "@/lib/action";
 
+
 function LoginForm() {
   const [error, setError] = useState(null);
   const router = useRouter(); // Initialize router
@@ -24,25 +25,25 @@ function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col mt-6 gap-5">
+    <form onSubmit={handleSubmit} className="flex flex-col mt-6 gap-3">
       <div className="flex flex-col">
-        <label htmlFor="username">Username</label>
+        <label htmlFor="username" className="text-sm">Username</label>
         <input
           type="text"
           placeholder="Enter a username"
           name="username"
-          className="p-1.5 rounded mt-1 text-[#222]"
+          className="py-1.5 pl-1.5 text-sm rounded mt-1 text-[#222]"
           required
         />
       </div>
 
       <div className="flex flex-col">
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password" className="text-sm">Password</label>
         <input
           type="password"
           placeholder="Password"
           name="password"
-          className="p-1.5 rounded mt-1 text-[#222]"
+          className="py-1.5 pl-1.5 text-sm rounded mt-1 text-[#222]"
           required
         />
       </div>

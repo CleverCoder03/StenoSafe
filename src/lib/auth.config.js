@@ -29,7 +29,7 @@ export const authConfig = {
   
         // Restrict protected pages if user is not logged in
         if (protectedRoutes.includes(pathname) && !user) {
-          return Response.redirect(new URL("/", request.nextUrl));
+          return Response.redirect(new URL("/login", request.nextUrl));
         }
   
         // Prevent logged-in users from accessing login/register pages

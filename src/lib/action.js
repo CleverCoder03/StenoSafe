@@ -8,6 +8,11 @@ import bcrypt from "bcryptjs";
 // import toast from "react-hot-toast";
 // import * as toast from 'react-hot-toast'
 
+export const handleGoogleLogin = async () => {
+  "use server";
+  await signIn("google");
+};
+
 export const handleGithubLogin = async () => {
   "use server";
   await signIn("github");
@@ -82,7 +87,3 @@ export const login = async (data) => {
     return { error: "Something went wrong. Please try again." };
   }
 };
-
-
-
-

@@ -8,7 +8,7 @@ function DecryptionPage() {
     <>
       <Navbar />
       <DecryptionForm />
-      <Footer />
+      {/* <Footer /> */}
     </>
   )
 }

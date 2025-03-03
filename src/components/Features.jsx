@@ -3,6 +3,7 @@ import Image from "next/image";
 import encrypt from "../assets/encrypt.png";
 import cloud from "../assets/cloud.png";
 import uiux from "../assets/uiux.png";
+import Feature from "./Feature";
 
 const features = [
   {
@@ -39,22 +40,9 @@ function Features() {
             hidden, secure, and accessible only to you.
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-4 mt-16">
+        <div className="flex flex-col sm:flex-row gap-6 mt-16 sm:px-10">
           {features.map(({ title, description, imgSrc }, index) => (
-            <div
-              key={index}
-              className="border border-white/30 px-5 py-10 text-center rounded-xl flex-1"
-            >
-              <div className="flex justify-center">
-                <div className="bg-white p-2 w-fit rounded-lg">
-                  <div className="inline-flex h-10 w-10  justify-center items-center relative p-8">
-                    <Image alt={title} src={imgSrc} fill />
-                  </div>
-                </div>
-              </div>
-              <h3 className="mt-6 font-bold">{title}</h3>
-              <p className="mt-2 text-white/70 ">{description}</p>
-            </div>
+            <Feature title={title} description={description} imgSrc={imgSrc} key={index}/>
           ))}
         </div>
       </div>

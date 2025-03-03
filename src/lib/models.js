@@ -27,27 +27,29 @@ const userSchema = new mongoose.Schema({
     }
 }, {timestamps: true})
 
-const EncryptedDataSchema = new mongoose.Schema({
-    title: {
-        type: String
-    },
-    img: {
+const EncryptedDataSchema = new mongoose.Schema(
+    {
+      img: {
         type: String,
         required: true,
-    },
-    password: {
+      },
+      password: {
         type: String,
-    },
-    userId: {
-        type: String,
-        required: true
-    },
-    slug: {
+        default: null,
+      },
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+      slug: {
         type: String,
         required: true,
-        unique: true
-    }
-}, {timestamps: true})
+        unique: true,
+      },
+    },
+    { timestamps: true }
+  );
 
 
 export const User = mongoose.models?.User || mongoose.model('User', userSchema)

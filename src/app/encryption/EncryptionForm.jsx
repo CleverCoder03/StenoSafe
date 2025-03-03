@@ -3,9 +3,20 @@ import { useState } from "react";
 
 export default function EncryptionForm() {
   const [image, setImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
   const [text, setText] = useState("");
   const [password, setPassword] = useState("");
   const [encryptedImage, setEncryptedImage] = useState(null);
+
+  const handleImageChange = (e) => {
+    if (image) return; // Restrict multiple uploads
+
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      setPreviewImage(URL.createObjectURL(file));
+    }
+  };
 
   const handleEncrypt = async () => {
     if (!image || !text) return alert("Image and text are required");
@@ -25,13 +36,128 @@ export default function EncryptionForm() {
     };
   };
 
+  const handleDownload = () => {
+    if (!encryptedImage) return;
+    const link = document.createElement("a");
+    link.href = encryptedImage;
+    link.download = "encrypted_image.png";
+    link.click();
+  };
+
+  const handleSave = async () => {
+    if (!encryptedImage) return alert("No encrypted image to save");
+  
+    try {
+      const response = await fetch("/api/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ img: encryptedImage, password }),
+      });
+  
+      const responseText = await response.text(); // Read response as text to check for errors
+      console.log("Raw response:", responseText);
+  
+      const data = JSON.parse(responseText); // Parse manually to catch errors
+  
+      if (!response.ok) {
+        alert(data.error || "Failed to save image");
+        return;
+      }
+  
+      alert("Image saved successfully!");
+    } catch (error) {
+      console.error("Save error:", error);
+      alert("Something went wrong. Please try again.");
+    }
+  };
+
   return (
-    <div>
-      <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
-      <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Enter secret text" />
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password (optional)" />
-      <button onClick={handleEncrypt}>Encrypt</button>
-      {encryptedImage && <img src={encryptedImage} alt="Encrypted" />}
+    <div className="max-w-md mx-auto p-6 bg-black shadow-lg flex flex-col gap-4">
+      <h2 className="text-xl font-bold text-center text-[#ffffffef]">
+        Encrypt Your Image
+      </h2>
+      
+      {/* File Input */}
+      <input
+        type="file"
+        accept="image/*"
+        id="fileInput"
+        className="hidden"
+        onChange={handleImageChange}
+        disabled={!!image} // Disable input after selecting an image
+      />
+      <label
+        htmlFor="fileInput"
+        className={`cursor-pointer bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md block text-center ${
+          image ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+      >
+        {image ? "Image Selected" : "Choose File"}
+      </label>
+
+      {/* Image Preview */}
+      {previewImage && (
+        <div className="flex justify-center mt-3">
+          <img
+            src={previewImage}
+            alt="Selected"
+            className="w-32 h-32 object-cover rounded-md border"
+          />
+        </div>
+      )}
+
+      {/* Secret Text Input */}
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Enter secret text"
+        className="py-2 px-3 text-sm border border-gray-300 rounded mt-1 focus:ring focus:ring-purple-200 resize-none h-36"
+      />
+
+      {/* Password Input */}
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password (optional)"
+        className="py-2 px-3 text-sm border border-gray-300 rounded mt-1 focus:ring focus:ring-purple-200"
+      />
+
+      {/* Encrypted Image Preview */}
+      {encryptedImage && (
+        <div className="flex justify-center mt-3">
+          <img
+            src={encryptedImage}
+            alt="Encrypted"
+            className="w-32 h-32 object-cover rounded-md border"
+          />
+        </div>
+      )}
+
+      {/* Buttons */}
+      {!encryptedImage ? (
+        <button
+          onClick={handleEncrypt}
+          className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 rounded-md outline-none mt-4"
+        >
+          Encrypt
+        </button>
+      ) : (
+        <div className="flex flex-col gap-3">
+          <button
+            onClick={handleDownload}
+            className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-md outline-none"
+          >
+            Download
+          </button>
+          <button
+            onClick={handleSave}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-md outline-none"
+          >
+            Save to Gallery
+          </button>
+        </div>
+      )}
     </div>
   );
 }

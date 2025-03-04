@@ -6,31 +6,40 @@ export default function DecryptionForm() {
   const [previewImage, setPreviewImage] = useState(null);
   const [password, setPassword] = useState("");
   const [decryptedText, setDecryptedText] = useState("");
-  const [notification, setNotification] = useState(""); // Notification state
+  const [notification, setNotification] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state
 
   const showNotification = (message) => {
     setNotification(message);
-    setTimeout(() => setNotification(""), 2000); // Hide after 2 seconds
+    setTimeout(() => setNotification(""), 2000);
   };
 
   const handleDecrypt = async () => {
     if (!image) return showNotification("⚠️ Please select an encrypted image");
 
+    setLoading(true); // Start loading
+
     const reader = new FileReader();
     reader.readAsDataURL(image);
     reader.onload = async () => {
-      const response = await fetch("/api/decrypt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: reader.result, password }),
-      });
+      try {
+        const response = await fetch("/api/decrypt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: reader.result, password }),
+        });
 
-      const data = await response.json();
-      if (response.ok) {
-        setDecryptedText(data.decryptedText);
-        showNotification("✅ Decryption successful!");
-      } else {
-        showNotification("❌ Incorrect password or invalid image");
+        const data = await response.json();
+        if (response.ok) {
+          setDecryptedText(data.decryptedText);
+          showNotification("✅ Decryption successful!");
+        } else {
+          showNotification("❌ Incorrect password or invalid image");
+        }
+      } catch (error) {
+        showNotification("❌ Something went wrong. Try again!");
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
   };
@@ -55,13 +64,13 @@ export default function DecryptionForm() {
       <h2 className="text-xl font-bold text-center text-[#ffffffef]">Decrypt Your Image</h2>
 
       {/* File Input */}
-      <input 
-        type="file" 
-        accept="image/*" 
-        id="fileInput" 
-        className="hidden" 
-        onChange={handleImageChange} 
-        disabled={!!image}
+      <input
+        type="file"
+        accept="image/*"
+        id="fileInput"
+        className="hidden"
+        onChange={handleImageChange}
+        disabled={!!image || loading}
       />
       <label
         htmlFor="fileInput"
@@ -86,14 +95,18 @@ export default function DecryptionForm() {
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Password (optional)"
         className="py-2 px-3 text-sm border border-gray-300 rounded mt-1 focus:ring focus:ring-purple-200"
+        disabled={loading}
       />
 
       {/* Decrypt Button */}
       <button
         onClick={handleDecrypt}
-        className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 rounded-md outline-none mt-4"
+        className={`bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 rounded-md outline-none mt-4 ${
+          loading ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+        disabled={loading}
       >
-        Decrypt
+        {loading ? "Decrypting..." : "Decrypt"}
       </button>
 
       {/* Decrypted Text Output */}

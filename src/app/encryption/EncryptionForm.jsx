@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // Import router for navigation
 
 export default function EncryptionForm() {
   const [image, setImage] = useState(null);
@@ -8,6 +9,10 @@ export default function EncryptionForm() {
   const [password, setPassword] = useState("");
   const [encryptedImage, setEncryptedImage] = useState(null);
   const [notification, setNotification] = useState(""); // Notification state
+  const [isEncrypting, setIsEncrypting] = useState(false); // Encryption loader
+  const [isSaving, setIsSaving] = useState(false); // Saving loader
+
+  const router = useRouter(); // Initialize router
 
   const showNotification = (message) => {
     setNotification(message);
@@ -27,6 +32,8 @@ export default function EncryptionForm() {
   const handleEncrypt = async () => {
     if (!image || !text) return showNotification("⚠️ Image and text are required");
 
+    setIsEncrypting(true); // Show loading
+
     const reader = new FileReader();
     reader.readAsDataURL(image);
     reader.onload = async () => {
@@ -37,6 +44,8 @@ export default function EncryptionForm() {
       });
 
       const data = await response.json();
+      setIsEncrypting(false); // Remove loading state
+
       if (response.ok) {
         setEncryptedImage(data.encryptedImage);
         showNotification("✅ Image encrypted successfully!");
@@ -58,6 +67,8 @@ export default function EncryptionForm() {
   const handleSave = async () => {
     if (!encryptedImage) return showNotification("⚠️ No encrypted image to save");
 
+    setIsSaving(true); // Start loading state
+
     try {
       const response = await fetch("/api/save", {
         method: "POST",
@@ -69,6 +80,7 @@ export default function EncryptionForm() {
       console.log("Raw response:", responseText);
 
       const data = JSON.parse(responseText);
+      setIsSaving(false); // Stop loading
 
       if (!response.ok) {
         showNotification("❌ Failed to save image");
@@ -76,9 +88,13 @@ export default function EncryptionForm() {
       }
 
       showNotification("✅ Image saved to gallery!");
+      setTimeout(() => {
+        router.push("/gallery"); // Redirect to gallery page
+      }, 2000);
     } catch (error) {
       console.error("Save error:", error);
       showNotification("❌ Something went wrong. Please try again.");
+      setIsSaving(false);
     }
   };
 
@@ -146,9 +162,12 @@ export default function EncryptionForm() {
       {!encryptedImage ? (
         <button
           onClick={handleEncrypt}
-          className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 rounded-md outline-none mt-4"
+          disabled={isEncrypting}
+          className={`bg-purple-600 text-white font-medium py-2 rounded-md outline-none mt-4 ${
+            isEncrypting ? "opacity-50 cursor-not-allowed" : "hover:bg-purple-700"
+          }`}
         >
-          Encrypt
+          {isEncrypting ? "Encrypting..." : "Encrypt"}
         </button>
       ) : (
         <div className="flex flex-col gap-3">
@@ -160,9 +179,12 @@ export default function EncryptionForm() {
           </button>
           <button
             onClick={handleSave}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-md outline-none"
+            disabled={isSaving}
+            className={`bg-blue-600 text-white font-medium py-2 rounded-md outline-none ${
+              isSaving ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+            }`}
           >
-            Save to Gallery
+            {isSaving ? "Saving..." : "Save to Gallery"}
           </button>
         </div>
       )}

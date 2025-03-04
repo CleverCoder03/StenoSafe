@@ -1,19 +1,31 @@
 "use client";
+import { useActionState, useState, useEffect } from "react";
 import { register } from "@/lib/action";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect } from "react";
-// import { useFormState } from 'react-dom'
+// import { useActionState } from "react-dom"; // Ensure correct import
 
 function RegisterForm() {
   const [state, formAction] = useActionState(register, undefined);
+  const [loading, setLoading] = useState(false); // Loading state
 
-  const router = useRouter()
+  const router = useRouter();
 
-  useEffect(()=>{
-    state?.success && router.push('/login')
-  },[state?.success, router])
+  useEffect(() => {
+    if (state?.success) {
+      setLoading(false);
+      router.push("/login");
+    } else if (state?.error) {
+      setLoading(false);
+    }
+  }, [state?.success, state?.error, router]);
+
+  const handleSubmit = async (event) => {
+    setLoading(true);
+    formAction(event);
+  };
+
   return (
-    <form action={formAction} className="flex flex-col gap-3">
+    <form action={handleSubmit} className="flex flex-col gap-3">
       <div className="flex flex-col">
         <label htmlFor="username" className="text-sm">Username</label>
         <input
@@ -24,6 +36,7 @@ function RegisterForm() {
           required
         />
       </div>
+
       <div className="flex flex-col">
         <label htmlFor="email" className="text-sm">Email</label>
         <input
@@ -31,8 +44,10 @@ function RegisterForm() {
           placeholder="Enter your Email"
           name="email"
           className="py-1.5 pl-1.5 text-sm rounded mt-1 text-[#222]"
+          required
         />
       </div>
+
       <div className="flex flex-col">
         <label htmlFor="password" className="text-sm">Password</label>
         <input
@@ -43,6 +58,7 @@ function RegisterForm() {
           required
         />
       </div>
+
       <div className="flex flex-col">
         <label htmlFor="passwordRepeat" className="text-sm">Re-enter Password</label>
         <input
@@ -53,12 +69,22 @@ function RegisterForm() {
           className="py-1.5 pl-1.5 text-sm rounded mt-1 text-[#222]"
         />
       </div>
-      <button className="bg-[#841eeb] py-2 rounded-md outline-none mt-4">
-        Register
+
+      <button
+        type="submit"
+        className={`bg-[#841eeb] py-2 rounded-md outline-none mt-4 ${
+          loading ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+        disabled={loading}
+      >
+        {loading ? "Registering..." : "Register"}
       </button>
-      <p className={state?.error ? `text-center bg-red-500 py-2 rounded-lg` : `hidden`}>
-        {state?.error}
-      </p>
+
+      {state?.error && (
+        <p className="text-center bg-red-500 text-white py-2 rounded-lg">
+          {state?.error}
+        </p>
+      )}
     </form>
   );
 }

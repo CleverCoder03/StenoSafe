@@ -9,7 +9,6 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 
 const LoginPage = () => {
-  const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState("");
 
   const showNotification = (message) => {
@@ -18,7 +17,6 @@ const LoginPage = () => {
   };
 
   const handleSocialLogin = async (provider) => {
-    setLoading(true);
     try {
       if (provider === "google") {
         await handleGoogleLogin();
@@ -27,8 +25,6 @@ const LoginPage = () => {
       }
     } catch (error) {
       showNotification("❌ Login failed. Try again!");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -47,32 +43,26 @@ const LoginPage = () => {
         <div className="bg-[#222222] p-3 rounded-lg w-96">
           <div className="flex flex-col gap-2 mt-2">
             {/* Google Login */}
-            <button
-              className={`border bg-white text-black text-sm border-white/70 p-2 rounded-lg w-full flex justify-center items-center gap-2 ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+            {/* <button
+              className="border bg-white text-black text-sm border-white/70 p-2 rounded-lg w-full flex justify-center items-center gap-2"
               onClick={() => handleSocialLogin("google")}
-              disabled={loading}
             >
               <span className="text-xl">
                 <FcGoogle />
               </span>
-              {loading ? "Logging in..." : "Login with Google"}
-            </button>
+              Login with Google
+            </button> */}
 
             {/* GitHub Login */}
-            <button
-              className={`border bg-white text-black text-sm border-white/70 p-2 rounded-lg w-full flex justify-center items-center gap-2 ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+            {/* <button
+              className="border bg-white text-black text-sm border-white/70 p-2 rounded-lg w-full flex justify-center items-center gap-2"
               onClick={() => handleSocialLogin("github")}
-              disabled={loading}
             >
               <span className="text-xl">
                 <FaGithub />
               </span>
-              {loading ? "Logging in..." : "Login with GitHub"}
-            </button>
+              Login with GitHub
+            </button> */}
           </div>
 
           {/* Login Form */}

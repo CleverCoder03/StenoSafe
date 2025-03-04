@@ -38,7 +38,7 @@ function LoginForm() {
 
   return (
     // <form onSubmit={handleSubmit} className="flex flex-col mt-6 gap-3">
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+    <form onSubmit={handleSubmit} className="flex flex-col mt-6 gap-3">
       <div className="flex flex-col">
         <label htmlFor="username" className="text-sm">
           Username

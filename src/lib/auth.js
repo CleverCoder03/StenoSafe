@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github"; 
-// import Google from "next-auth/providers/google"; 
+import Google from "next-auth/providers/google"; 
 import CredentialsProvider from "next-auth/providers/credentials"; 
 import { connectToDB } from "./utils";
 import { User } from "./models";
@@ -41,10 +41,10 @@ const login = async (credentials) => {
 export const { handlers:{GET,POST}, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
-    // Google({
-    //   clientId: process.env.GOOGLE_ID,
-    //   clientSecret: process.env.GOOGLE_SECRET,
-    // }),
+    Google({
+      clientId: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET,
+    }),
     GitHub({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
@@ -65,29 +65,32 @@ export const { handlers:{GET,POST}, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks:{
-    async signIn({user, account, profile}){
-      console.log(user,account,profile)
-      if (account.provider == 'github'){
-        connectToDB();
-        try{
-          const user = await User.findOne({email: profile.email})
+    // async signIn({user, account, profile}){
+    //   console.log(user,account,profile)
+    //   if (account.provider == 'github'){
+    //     connectToDB();
+    //     try{
+    //       const user = await User.findOne({email: profile.email})
 
-          if(!user){
-            const newUser = new User({
-              username: profile.login,
-              email: profile.email,
-              img: profile.avatar_url
-            })
-            await newUser.save()
-          }
+    //       if(!user){
+    //         const newUser = new User({
+    //           username: profile.login,
+    //           email: profile.email,
+    //           img: profile.avatar_url
+    //         })
+    //         await newUser.save()
+    //       }
 
-        } catch(err){
-          console.log(err.message)
-          return false
-        }
-      }
-      return true
-    },
+    //     } catch(err){
+    //       console.log(err.message)
+    //       return false
+    //     }
+    //   }
+    //   return true
+    // },
+
+
+
     // async signIn({ user, account, profile }) {
     //   console.log("Sign-in attempt:", { user, account, profile });
   
@@ -113,6 +116,32 @@ export const { handlers:{GET,POST}, auth, signIn, signOut } = NextAuth({
   
     //   return true;
     // },
+
+
+    async signIn({ user, account, profile, credentials }) {
+      console.log("Sign-in attempt:", { user, account, profile });
+
+      await connectToDB();
+
+      try {
+        let existingUser = await User.findOne({ email: user.email });
+
+        if (!existingUser && account?.provider !== "credentials") {
+          const newUser = new User({
+            username: profile?.login || profile?.name,
+            email: profile?.email,
+            img: profile?.avatar_url || profile?.picture,
+          });
+
+          await newUser.save();
+        }
+      } catch (err) {
+        console.error("Sign-in error:", err.message);
+        return false;
+      }
+
+      return true;
+    },
     ...authConfig.callbacks,
   }
 });

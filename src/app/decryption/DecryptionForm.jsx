@@ -6,9 +6,15 @@ export default function DecryptionForm() {
   const [previewImage, setPreviewImage] = useState(null);
   const [password, setPassword] = useState("");
   const [decryptedText, setDecryptedText] = useState("");
+  const [notification, setNotification] = useState(""); // Notification state
+
+  const showNotification = (message) => {
+    setNotification(message);
+    setTimeout(() => setNotification(""), 2000); // Hide after 2 seconds
+  };
 
   const handleDecrypt = async () => {
-    if (!image) return alert("Please select an encrypted image");
+    if (!image) return showNotification("⚠️ Please select an encrypted image");
 
     const reader = new FileReader();
     reader.readAsDataURL(image);
@@ -20,8 +26,12 @@ export default function DecryptionForm() {
       });
 
       const data = await response.json();
-      if (response.ok) setDecryptedText(data.decryptedText);
-      else alert(data.error);
+      if (response.ok) {
+        setDecryptedText(data.decryptedText);
+        showNotification("✅ Decryption successful!");
+      } else {
+        showNotification("❌ Incorrect password or invalid image");
+      }
     };
   };
 
@@ -34,26 +44,42 @@ export default function DecryptionForm() {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-black shadow-lg flex flex-col gap-4 ">
+    <div className="max-w-md mx-auto p-6 bg-black shadow-lg flex flex-col gap-4">
+      {/* Notification */}
+      {notification && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-md shadow-lg text-center transition-opacity duration-300">
+          {notification}
+        </div>
+      )}
+
       <h2 className="text-xl font-bold text-center text-[#ffffffef]">Decrypt Your Image</h2>
+
+      {/* File Input */}
       <input 
         type="file" 
         accept="image/*" 
         id="fileInput" 
         className="hidden" 
         onChange={handleImageChange} 
+        disabled={!!image}
       />
       <label
         htmlFor="fileInput"
-        className="cursor-pointer bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md block text-center"
+        className={`cursor-pointer bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md block text-center ${
+          image ? "opacity-50 cursor-not-allowed" : ""
+        }`}
       >
-        Choose File
+        {image ? "Image Selected" : "Choose File"}
       </label>
+
+      {/* Image Preview */}
       {previewImage && (
         <div className="flex justify-center mt-3">
           <img src={previewImage} alt="Selected" className="w-32 h-32 object-cover rounded-md border" />
         </div>
       )}
+
+      {/* Password Input */}
       <input
         type="password"
         value={password}
@@ -61,12 +87,16 @@ export default function DecryptionForm() {
         placeholder="Password (optional)"
         className="py-2 px-3 text-sm border border-gray-300 rounded mt-1 focus:ring focus:ring-purple-200"
       />
+
+      {/* Decrypt Button */}
       <button
         onClick={handleDecrypt}
         className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 rounded-md outline-none mt-4"
       >
         Decrypt
       </button>
+
+      {/* Decrypted Text Output */}
       {decryptedText && (
         <p className="text-center text-white bg-gray-800 p-3 rounded-lg mt-4">
           Decrypted Message: {decryptedText}

@@ -7,6 +7,12 @@ export default function EncryptionForm() {
   const [text, setText] = useState("");
   const [password, setPassword] = useState("");
   const [encryptedImage, setEncryptedImage] = useState(null);
+  const [notification, setNotification] = useState(""); // Notification state
+
+  const showNotification = (message) => {
+    setNotification(message);
+    setTimeout(() => setNotification(""), 5000); // Hide after 5 seconds
+  };
 
   const handleImageChange = (e) => {
     if (image) return; // Restrict multiple uploads
@@ -19,7 +25,7 @@ export default function EncryptionForm() {
   };
 
   const handleEncrypt = async () => {
-    if (!image || !text) return alert("Image and text are required");
+    if (!image || !text) return showNotification("⚠️ Image and text are required");
 
     const reader = new FileReader();
     reader.readAsDataURL(image);
@@ -31,8 +37,12 @@ export default function EncryptionForm() {
       });
 
       const data = await response.json();
-      if (response.ok) setEncryptedImage(data.encryptedImage);
-      else alert(data.error);
+      if (response.ok) {
+        setEncryptedImage(data.encryptedImage);
+        showNotification("✅ Image encrypted successfully!");
+      } else {
+        showNotification("❌ Encryption failed");
+      }
     };
   };
 
@@ -42,41 +52,47 @@ export default function EncryptionForm() {
     link.href = encryptedImage;
     link.download = "encrypted_image.png";
     link.click();
+    showNotification("📥 Image downloaded!");
   };
 
   const handleSave = async () => {
-    if (!encryptedImage) return alert("No encrypted image to save");
-  
+    if (!encryptedImage) return showNotification("⚠️ No encrypted image to save");
+
     try {
       const response = await fetch("/api/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ img: encryptedImage, password }),
       });
-  
-      const responseText = await response.text(); // Read response as text to check for errors
+
+      const responseText = await response.text();
       console.log("Raw response:", responseText);
-  
-      const data = JSON.parse(responseText); // Parse manually to catch errors
-  
+
+      const data = JSON.parse(responseText);
+
       if (!response.ok) {
-        alert(data.error || "Failed to save image");
+        showNotification("❌ Failed to save image");
         return;
       }
-  
-      alert("Image saved successfully!");
+
+      showNotification("✅ Image saved to gallery!");
     } catch (error) {
       console.error("Save error:", error);
-      alert("Something went wrong. Please try again.");
+      showNotification("❌ Something went wrong. Please try again.");
     }
   };
 
   return (
     <div className="max-w-md mx-auto p-6 bg-black shadow-lg flex flex-col gap-4">
-      <h2 className="text-xl font-bold text-center text-[#ffffffef]">
-        Encrypt Your Image
-      </h2>
-      
+      {/* Notification */}
+      {notification && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-md shadow-lg text-center transition-opacity duration-300">
+          {notification}
+        </div>
+      )}
+
+      <h2 className="text-xl font-bold text-center text-[#ffffffef]">Encrypt Your Image</h2>
+
       {/* File Input */}
       <input
         type="file"
@@ -84,7 +100,7 @@ export default function EncryptionForm() {
         id="fileInput"
         className="hidden"
         onChange={handleImageChange}
-        disabled={!!image} // Disable input after selecting an image
+        disabled={!!image}
       />
       <label
         htmlFor="fileInput"
@@ -98,11 +114,7 @@ export default function EncryptionForm() {
       {/* Image Preview */}
       {previewImage && (
         <div className="flex justify-center mt-3">
-          <img
-            src={previewImage}
-            alt="Selected"
-            className="w-32 h-32 object-cover rounded-md border"
-          />
+          <img src={previewImage} alt="Selected" className="w-32 h-32 object-cover rounded-md border" />
         </div>
       )}
 
@@ -126,11 +138,7 @@ export default function EncryptionForm() {
       {/* Encrypted Image Preview */}
       {encryptedImage && (
         <div className="flex justify-center mt-3">
-          <img
-            src={encryptedImage}
-            alt="Encrypted"
-            className="w-32 h-32 object-cover rounded-md border"
-          />
+          <img src={encryptedImage} alt="Encrypted" className="w-32 h-32 object-cover rounded-md border" />
         </div>
       )}
 

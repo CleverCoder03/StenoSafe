@@ -1,4 +1,4 @@
-import { decryptData } from "@/utils/encryption";
+import { decryptData } from "@/utils/steganography";
 
 export async function POST(req) {
   try {

@@ -1,17 +1,16 @@
 "use server";
 
-import { User } from "./models";
+import { EncryptedData, User } from "./models";
 import { connectToDB } from "./utils";
 
 import { signIn, signOut } from "./auth";
 import bcrypt from "bcryptjs";
-// import toast from "react-hot-toast";
-// import * as toast from 'react-hot-toast'
 
-// export const handleGoogleLogin = async () => {
-//   "use server";
-//   await signIn("google");
-// };
+
+export const handleGoogleLogin = async () => {
+  "use server";
+  await signIn("google");
+};
 
 export const handleGithubLogin = async () => {
   "use server";
@@ -85,5 +84,29 @@ export const login = async (data) => {
     }
 
     return { error: "Something went wrong. Please try again." };
+  }
+};
+
+
+
+export const deleteImage = async (imageId) => {
+  "use server"; // Ensures it's a server action
+
+  try {
+    await connectToDB();
+    console.log("Deleting image with ID:", imageId);
+
+    const deletedImage = await EncryptedData.findByIdAndDelete(imageId);
+    
+    if (!deletedImage) {
+      console.log("Image not found");
+      return { error: "Image not found" };
+    }
+
+    console.log("Image deleted successfully:", deletedImage);
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting image:", error);
+    return { error: "Failed to delete image" };
   }
 };

@@ -1,20 +1,30 @@
 import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/utils";
 import { EncryptedData } from "@/lib/models";
-import { auth } from "@/lib/auth"; // Ensure authentication
+import { auth } from "@/lib/auth";
+import mongoose from "mongoose";
 import { nanoid } from "nanoid";
 
 export async function POST(req) {
   try {
     await connectToDB();
-    const session = await auth(); // Get logged-in user session
+    const session = await auth();
 
-    if (!session) {
+    console.log("User session:", session); // Debugging
+
+    if (!session || !session.user || !session.user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await req.json();
-    const { img, password } = body;
+    // Ensure userId is a valid MongoDB ObjectId
+    const userId = session.user.id;
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return NextResponse.json({ error: "Invalid user ID" }, { status: 400 });
+    }
+
+    const { img, password } = await req.json();
+
+    console.log("Received request body:", { img, password }); // Debugging
 
     if (!img) {
       return NextResponse.json({ error: "Image is required" }, { status: 400 });
@@ -23,11 +33,13 @@ export async function POST(req) {
     const newEncryptedImage = new EncryptedData({
       img,
       password: password || null,
-      userId: session.user.id,
+      userId: new mongoose.Types.ObjectId(userId),
       slug: nanoid(10),
     });
 
+    console.log("Saving to DB:", newEncryptedImage); // Debugging
     await newEncryptedImage.save();
+
     return NextResponse.json({ message: "Image saved successfully!" }, { status: 201 });
   } catch (error) {
     console.error("Error saving image:", error);

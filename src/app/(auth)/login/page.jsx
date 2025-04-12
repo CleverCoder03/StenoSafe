@@ -43,7 +43,7 @@ const LoginPage = () => {
         <div className="bg-[#222222] p-3 rounded-lg w-96">
           <div className="flex flex-col gap-2 mt-2">
             {/* Google Login */}
-            <button
+            {/* <button
               className="border bg-white text-black text-sm border-white/70 p-2 rounded-lg w-full flex justify-center items-center gap-2"
               onClick={() => handleSocialLogin("google")}
             >
@@ -51,10 +51,10 @@ const LoginPage = () => {
                 <FcGoogle />
               </span>
               Login with Google
-            </button>
+            </button> */}
 
             {/* GitHub Login */}
-            <button
+            {/* <button
               className="border bg-white text-black text-sm border-white/70 p-2 rounded-lg w-full flex justify-center items-center gap-2"
               onClick={() => handleSocialLogin("github")}
             >
@@ -62,7 +62,7 @@ const LoginPage = () => {
                 <FaGithub />
               </span>
               Login with GitHub
-            </button>
+            </button> */}
           </div>
 
           {/* Login Form */}
